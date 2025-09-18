@@ -10,11 +10,17 @@ import UserLogin from './Components/UserLogin';
 import UserRegistration from './Components/UserRegistration';
 import Dashboard from './Components/dashboard';
 import Addtocard from './Components/Addtocart';
+import Placeorder from './Components/Placeorder';
+import UserContext from './context/Usercontext';
 
 function App() {
-  
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+})
 
   return (
+    <UserContext.Provider value={{ cart, setCart }}>
     <Router>
     {/* <Nav/> */}
     <Routes>
@@ -27,9 +33,11 @@ function App() {
       <Route path='/Registration' element={<UserRegistration/>}/>
       <Route path='/dashboard' element={<Dashboard/>}/>
       <Route path='/Addcard' element={<Addtocard/>}/>
+      <Route path='/Placeorder' element={<Placeorder/>}/>
+
     </Routes>
     </Router>
-    
+    </UserContext.Provider>
     
   )
 }

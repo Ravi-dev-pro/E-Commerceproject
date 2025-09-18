@@ -1,11 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
+import React, { useContext } from 'react';
+import UserContext from "../context/Usercontext";
 
 
 
 function Product() {
+   
     const [user, setUser] = useState(null)
     const [showprofile, setShowProfile] = useState(false)
     const loginfirst = () => {
@@ -13,29 +16,30 @@ function Product() {
     }
     const location = useLocation();
     const navigate = useNavigate()
-    const { item } = location.state || {};
+    const { item, } = location.state || {};
     const handlelogout = () => {
         localStorage.removeItem("user")
         setUser(null)
         navigate("/")
     }
+    const {cart,setCart}=useContext(UserContext)
     const handleAddToCart = () => {
-        let savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      
-        const alreadyAdded = savedCart.find((p) => p.id === item.id);
+        const newCart = [...(cart || [])]; 
+
+    const alreadyAdded = newCart.find((p) => p.id === item.id);
         if (alreadyAdded) {
-          savedCart = savedCart.map((p) =>
-            p.id === item.id ? { ...p, qty: p.qty + 1 } : p
-          );
+            const updatedCart = newCart.map((p) =>
+                p.id === item.id ? { ...p, qty: p.qty + 1 } : p
+            )
+            setCart(updatedCart);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
         } else {
-          savedCart.push({ ...item, qty: 1 });
+            const updatedCart = [...newCart, { ...item, qty: 1 }];
+        setCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
         }
-      
-        localStorage.setItem("cart", JSON.stringify(savedCart));
-      
-      
         navigate("/Addcard", { state: { user } });
-      };
+    };
     useEffect(() => {
         const storeduser = localStorage.getItem("user")
         if (storeduser) {
@@ -72,10 +76,14 @@ function Product() {
                     <h1 className="">LensVox</h1>
 
                     <div className="ml-auto flex pr-3 relative z-50">
-                        <div className="mr-2 flex items-center">
+                        <Link to={"/Addcard"} className="mr-2 flex items-center">
                             <ShoppingCart size={24} className="mr-10" />
-                            <p>Welcome : {user.name}</p>
-                        </div>
+                            <span className="absolute -top-1 -left-0 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {cart?.length || 0}
+                            </span>
+                        </Link>
+
+                        <p className="mt-2 pr-3">Welcome : {user.name}</p>
 
                         <div className="p-1 relative">
                             <button

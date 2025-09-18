@@ -151,9 +151,10 @@ function UserLogin() {
                   </div>
                   {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
                 </div>
-
+              
                 <button
                   onClick={sendOtp}
+                  // onClick(Enter)
                   disabled={isLoading || phoneNumber.length !== 10}
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-2xl"
                 >
