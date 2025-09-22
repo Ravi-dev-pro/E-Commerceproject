@@ -60,7 +60,7 @@ function Placeorder() {
     const handleLogout = () => {
         localStorage.removeItem("user");
         setUser(null);
-        navigate("/UserLogin");
+        navigate("/");
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
